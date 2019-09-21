@@ -11,6 +11,7 @@ RTC_DS3231 rtc;
 
 void fetch_temperature(void);
 void fetch_location(void);
+void fetch_time(void);
 void setup_rtc(void);
 void setup_temp_sensor(void);
 void setup_gsm(void);
@@ -42,6 +43,7 @@ void setup()
   pinMode(tilt_sensor, INPUT);
   Serial.begin(9600);
   gps.begin(9600);
+  gsm.begin(9600);
   setup_temp_sensor(); 
   setup_rtc();
 }
@@ -135,6 +137,11 @@ void fetch_location(void)
       break;
     }
   }
+}
+
+void fetch_time(void)
+{
+  //code to grab time from rtc
 }
 
 void setup_rtc(void)
