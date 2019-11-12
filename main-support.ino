@@ -2,6 +2,8 @@ int status_led = 13;    //Actual is pin 7
 int tilt_sensor = 6;
 int arm_button = 7;
 
+char first_transmit;    //set to a '1' for first transmit, '0' for rest of time
+
 byte i;     //Temperature sensor main variables
 byte present = 0;
 byte type_s;
@@ -12,6 +14,7 @@ float celsius;
 String DATA = "";    //Data format for transmit
 String main_time = "";    //Current time from RTC
 String tilt_time = "";    //time of tilt
+String start_time = "";    //time system is armed
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -105,8 +108,7 @@ void fetch_temperature(void)
 void fetch_time(String time_) 
 {
   DateTime now = rtc.now();
-  time_ = now.year()+'/'+ now.month()+'/'+ now.day()+'/'+' '+ now.hour()+':'+
-          now.minute()+':'+ now.second();
+  time_ = String(now.hour())+':'+ String(now.minute())+':'+ String(now.second());
   Serial.println(time_);
 }
 
@@ -118,7 +120,6 @@ void setup_rtc(void)
     Serial.println("RTC not running.");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));  
   }
-  startTime = DateTime.now()
 }
 
 
@@ -136,14 +137,15 @@ void fetch_location(void)
 void format_data(void) 
 {
   /*
-  char f[50];
-  itoa(f, 50);*/
-  DATA = String(celsius) + "," + String(longitude) + ","
-  + String(lattitude) + "," + "," +
-  "," + main_time + "," + tilt_time;
+   * E.g. 23.45,7.4434,6.3323, 23:43:12, ,0, 1997/12/9 09:43:12
+   */
+  
+  DATA = String(celsius,2) + "," + String(longitude,4) + ","
+  + String(lattitude,4) + "," + main_time +
+  "," + tilt_time + "," + first_transmit + start_time;
 }
 
-
+.
 
 void setup_gsm(void)
 {
@@ -152,7 +154,7 @@ void setup_gsm(void)
 
 
 
-void transmit_data(void)
+void transmit_data()
 {
   //
 }
